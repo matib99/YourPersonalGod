@@ -3,18 +3,28 @@ import dotenv
 
 
 class Conversation():
-    # Not sure what initial_prompt is supposed to be
-    # OpenAI API key is required. It could be stored in an .env file
-    # Model can be replaced by a fine-tuned model
-    def __init__(self, initial_prompt: str, api_key_path: str, model = "text-davinci-003", temperature = 0.5):
+    # OpenAI API key is required
+    # It could be stored in an .env file
+    # Model can be replaced by a fine-tuned model later
+    def __init__(self, api_key_path: str, initial_prompt: str, model = "gpt-3.5-turbo"):
         self.api_key = dotenv.dotenv_values(api_key_path)["OPENAI_API_KEY"]
-        self.initial_prompt = initial_prompt 
+        openai.api_key = self.api_key
+
         self.model = model
-        self.temperature = temperature
+        self.initial_prompt = initial_prompt
+        self.messages = [ {"role": "system", "content": initial_prompt}]
 
 
     # Returns a response based on prompt
     def respond(self, message: str) -> str:
-        openai.api_key = self.api_key
-        response = openai.Completion.create(model = self.model, prompt = message, )
-        return response.choices[0].text
+        self.messages.append({"role": "user", "content": message})
+        chat = openai.ChatCompletion.create(model = self.model, messages = self.messages)
+        response = chat.choices[0].message.content
+        self.messages.append({"role": "assistant", "content": response})
+        return response
+    
+
+    # Clears messages
+    # That should be enough
+    def reset(self):
+        self.messages = [ {"role": "system", "content": self.initial_prompt}]
