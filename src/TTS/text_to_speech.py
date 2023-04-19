@@ -1,8 +1,8 @@
 #TTS model - Real-Time-Voice-Cloning (RTVC)
-#there should be cloned RTVC repo inside this directory
+#there should be cloned copy of our model inside this directory
 #and also sample wav file in this directory as well
-#I tested it with pythons version 3.7.16
-#before running the script it is necessary to download pretrained models, details are described in RTVC repository
+#cartainly working python version - 3.7.16
+#before running the script it is necessary to download pretrained models how its described in RTVC repository
 import argparse
 import soundfile as sf
 
@@ -14,6 +14,11 @@ from synthesizer.inference import Synthesizer
 from vocoder import inference as vocoder
 from encoder import inference as encoder
 from pathlib import Path
+
+
+def slerp_np(embed1, embed2, alpha):
+    angle = np.arccos(np.dot(embed1, embed2))
+    return (np.sin((1 - alpha) * angle) * embed1 + np.sin(alpha * angle) * embed2) / np.sin(angle)
 
 
 class Text_To_Speech():
@@ -75,7 +80,7 @@ class Text_To_Speech():
         #padding as a workaround for bug, cutting silence
         self.generated_wav = np.pad(self.generated_wav, (0, self.synthesizer.sample_rate), mode="constant")
         self.generated_wav = encoder.preprocess_wav(self.generated_wav)
-        return self.generated_wav
+        return
 
     def play_audio(self):
         import sounddevice as sd
@@ -94,6 +99,24 @@ class Text_To_Speech():
         sf.write(filename, self.generated_wav.astype(np.float32), self.synthesizer.sample_rate)
         self.num_generated += 1
         print("\nSaved output audio as %s\n\n" % filename)
+        return
+
+    def interpolate_embeddings(self, path1, path2, alpha):
+        #alpha takes values 0<alpha<1
+        #loading and embedding:
+        wav1 = encoder.preprocess_wav(path1)
+        wav2 = encoder.preprocess_wav(path2)
+
+        first_sample = encoder.embed_utterance(wav1)
+        second_sample = encoder.embed_utterance(wav2)
+
+        #spherical interpolation slerp:
+        interpolated_embedding = slerp_np(first_sample,second_sample,alpha)
+        # L2-renormalisation (to eliminate possible numerical errors):
+        interpolated_embedding = interpolated_embedding / np.linalg.norm(interpolated_embedding, 2)  
+
+        self.embedded_sample = interpolated_embedding
+        print("samples enterpolated and embedded")
         return
 
 
