@@ -1,30 +1,22 @@
-import openai
-import dotenv
+from llama_cpp import Llama
+import copy
 
 
 class Conversation():
-    # OpenAI API key is required
-    # It could be stored in an .env file
-    # Model can be replaced by a fine-tuned model later
-    def __init__(self, api_key_path: str, initial_prompt: str, model = "gpt-3.5-turbo"):
-        self.api_key = dotenv.dotenv_values(api_key_path)["OPENAI_API_KEY"]
-        openai.api_key = self.api_key
-
-        self.model = model
+    # Initial prompt should be in a "Question: (...)? Answer:" fromat
+    def __init__(self, initial_prompt: str, model_path: str) -> None:
         self.initial_prompt = initial_prompt
-        self.messages = [ {"role": "system", "content": initial_prompt}]
+        self.current_prompt = initial_prompt
+        self.llama = Llama(model_path = model_path)
+        print("Model ready")
 
 
-    # Returns a response based on prompt
     def respond(self, message: str) -> str:
-        self.messages.append({"role": "user", "content": message})
-        chat = openai.ChatCompletion.create(model = self.model, messages = self.messages)
-        response = chat.choices[0].message.content
-        self.messages.append({"role": "assistant", "content": response})
-        return response
-    
+        self.current_prompt += "\nQuestion: {:} Answer:".format(message)
+        output = self.llama(self.current_prompt, max_tokens = 100, stop = ["\n", "Question:", "Q:"], echo = True)
+        ans = copy.deepcopy(output)["choices"][0]["text"]
+        return ans.replace(self.current_prompt, "")
 
-    # Clears messages
-    # That should be enough
-    def reset(self):
-        self.messages = [ {"role": "system", "content": self.initial_prompt}]
+
+    def reset(self) -> None:
+        self.current_prompt = self.initial_prompt

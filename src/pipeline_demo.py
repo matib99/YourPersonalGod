@@ -15,7 +15,8 @@ def main():
     )
     print("Voice input ready")
 
-    conversation = Conversation(initial_prompt = "You are a helpful and intelligent assistant. Your interlocutor is not. Be ready for anything.", api_key_path = "Change this")
+    conversation = Conversation(initial_prompt = "Question: What is the Final Shape? Answer: The Final Shape is that which remains when all that can be removed, has been removed.",
+                                 model_path = "Change this")
 
     tts = Text_To_Speech()
     tts.set_sample('sample_wav_path')
