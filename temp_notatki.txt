@@ -1,0 +1,9 @@
+Żeby naprawić problem z glibc trzeba zainstalować przez condę poprawną wersję libstdc++ komendą: conda install -c conda-forge libstdcxx-ng
+
+najlepiej wstawić string 'default' w mikrofonie, ewentualnie puścić serwer pulse
+
+ładowanie modeli vicuny wymaga starszej wersji llama.cpp (i llama-cpp-python)
+
+przez niekompatybilność librosy trzeba zmienić dwie funkcje w Real-Time-Voice-Cloning, tj. zamienić argumenty w argumenty=, tzn. od wersji 0.9 dwie istotne funkcje mają postać:
+librosa.feature.melspectrogram(*, y=None, sr=22050, S=None, n_fft=2048, hop_length=512, win_length=None, window='hann', center=True, pad_mode='constant', power=2.0, **kwargs)
+librosa.resample(y, *, orig_sr, target_sr, res_type='soxr_hq', fix=True, scale=False, axis=-1, **kwargs)

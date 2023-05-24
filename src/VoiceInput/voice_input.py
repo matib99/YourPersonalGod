@@ -35,15 +35,20 @@ class VoiceInput():
         if model != "large" and not non_english:
             model = model + ".en"
         self.audio_model = model 
+        
 
         with source:
             self.recorder.adjust_for_ambient_noise(source)
     
     def get_phrase(self):
+        print("tam")
         with self.source:
             data = self.recorder.listen(self.source)
+        print("tu")
         transcription=self.recorder.recognize_whisper(data, self.audio_model)
+        print("tadam")
         return transcription
+
 # self.energy_threshold = 300  # minimum audio energy to consider for recording
 # self.dynamic_energy_threshold = True
 # self.dynamic_energy_adjustment_damping = 0.15
