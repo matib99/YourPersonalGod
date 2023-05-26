@@ -1,7 +1,3 @@
-#TTS model - Real-Time-Voice-Cloning (RTVC)
-#there should be cloned copy of our model inside this directory
-#and also sample wav file in this directory as well
-#cartainly working python version - 3.7.16
 #before running the script it is necessary to download pretrained models how its described in RTVC repository
 import argparse
 import soundfile as sf
@@ -9,7 +5,7 @@ import soundfile as sf
 import numpy as np
 import torch
 import sys
-sys.path.append('./Real-Time-Voice-Cloning')
+sys.path.append('./TTS/Real-Time-Voice-Cloning')
 from synthesizer.inference import Synthesizer
 from vocoder import inference as vocoder
 from encoder import inference as encoder
@@ -22,7 +18,7 @@ def slerp_np(embed1, embed2, alpha):
 
 
 class Text_To_Speech():
-    def __init__(self, model_path = "./Real-Time-Voice-Cloning/saved_models/default/"):
+    def __init__(self, model_path = "./TTS/Real-Time-Voice-Cloning/saved_models/default/"):
 
         #parsing paths as arguments (it appears as though it is necessary)
         parser = argparse.ArgumentParser(
@@ -116,7 +112,7 @@ class Text_To_Speech():
         interpolated_embedding = interpolated_embedding / np.linalg.norm(interpolated_embedding, 2)  
 
         self.embedded_sample = interpolated_embedding
-        print("samples enterpolated and embedded")
+        print("samples interpolated and embedded")
         return
 
 
