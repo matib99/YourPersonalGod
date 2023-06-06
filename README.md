@@ -5,9 +5,9 @@ fork from: https://github.com/stylegan-human/StyleGAN-Human
 [God-Human Dataset](https://drive.google.com/drive/folders/1Tl5KorGxcwABZjwC0mp9FhfAKb-UMeZw?usp=sharing)
 
 ## Model download
-StyleGAN2 Pretrained Human Model: [stylegan_human_v2_1024.pkl](https://drive.google.com/file/d/1FlAb1rYa0r_--Zj_ML8e6shmaF28hQb5/view?usp=sharing)| 
+StyleGAN2 Pretrained Human Model: [stylegan_human_v2_1024.pkl](https://drive.google.com/file/d/1FlAb1rYa0r_--Zj_ML8e6shmaF28hQb5/view?usp=sharing)
 
-StyleGAN2 Pretrained God-Human Model: [god-human-model.pkl](https://drive.google.com/file/d/1NLVeo256NT2g4pIi8JDdp5kgbQhIrr5B/view?usp=sharing)|
+StyleGAN2 Pretrained God-Human Model: [god-human-model.pkl](https://drive.google.com/file/d/1NLVeo256NT2g4pIi8JDdp5kgbQhIrr5B/view?usp=sharing)
 
 Place above models in `pretrained_models` dir. 
 
