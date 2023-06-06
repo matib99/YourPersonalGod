@@ -5,9 +5,9 @@ fork from: https://github.com/stylegan-human/StyleGAN-Human
 [God-Human Dataset](https://drive.google.com/drive/folders/1Tl5KorGxcwABZjwC0mp9FhfAKb-UMeZw?usp=sharing)
 
 ## Model download
-| StyleGAN2 Pretrained Human Model |[stylegan_human_v2_1024.pkl](https://drive.google.com/file/d/1FlAb1rYa0r_--Zj_ML8e6shmaF28hQb5/view?usp=sharing)| 
-Pretrained
-| StyleGAN2 Pretrained God-Human Model |[god-human-model.pkl](https://drive.google.com/file/d/1NLVeo256NT2g4pIi8JDdp5kgbQhIrr5B/view?usp=sharing)|
+StyleGAN2 Pretrained Human Model: [stylegan_human_v2_1024.pkl](https://drive.google.com/file/d/1FlAb1rYa0r_--Zj_ML8e6shmaF28hQb5/view?usp=sharing)| 
+
+StyleGAN2 Pretrained God-Human Model: [god-human-model.pkl](https://drive.google.com/file/d/1NLVeo256NT2g4pIi8JDdp5kgbQhIrr5B/view?usp=sharing)|
 
 Place above models in `pretrained_models` dir. 
 
@@ -41,12 +41,12 @@ LD_LIBRARY_PATH=; python generate.py --outdir=out/stylegan_human_v2_1024 --trunc
 python train.py --outdir=training_results/sg2/god_human --data=data/god_human_dataset --gpus=4 --cond=0 --aug=noaug --snap=10 --mirror=1 --cfg=shhq --square=False --workers=1 --resume=pretrained_models/stylegan_human_v2_1024.pkl
 ```
 
-If you use slurm in ICM just type:
+If you're using slurm in ICM just type:
 ```
 sbatch run_training.sh
 ```
 
-### Generate full-body human images using our pretrained model
+### Generate full-body images using our pretrained model
 ```
 # Generate full-body images without truncation
 python generate.py --outdir=your_outdir --trunc=1 --seeds=1,3,5,7 --network=pretrained_models/god-human-model.pkl --version 2
