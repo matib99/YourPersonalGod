@@ -52,7 +52,7 @@ sbatch run_training.sh
 python generate.py --outdir=your_outdir --trunc=1 --seeds=1,3,5,7 --network=pretrained_models/god-human-model.pkl --version 2
 
 # Generate full-body images with truncation 
-python generate.py --outdir=outputs/generate/stylegan_human_v2_1024 --trunc=0.8 --seeds=0-10 --network=pretrained_models/god-human-model.pkl --version 2
+python generate.py --outdir=your_outdir --trunc=0.8 --seeds=0-10 --network=pretrained_models/god-human-model.pkl --version 2
 ```
 
 ### Interpolation with pivotal tuning
