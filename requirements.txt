@@ -1,20 +1,22 @@
-pyaudio
-SpeechRecognition
---extra-index-url https://download.pytorch.org/whl/cu116
-torch
+pyaudio==0.2.13
+SpeechRecognition==3.10.0
+# --extra-index-url https://download.pytorch.org/whl/cu116 - change to your preferred cuda version
+torch==2.0.1
 git+https://github.com/openai/whisper.git
-soundfile
-sounddevice
+soundfile==0.12.1
+sounddevice==0.4.6
 
-llama-cpp-python
+llama-cpp-python==0.1.54
 librosa
 unidecode
 inflect
 matplotlib
 wave
 
-# Python version 3.8 works just fine, regarding librosa, the newest version renders bugs in Real-Time-Voice-Cloning, but it takes repairing only 2 basic functions to repair that
+# Python version 3.8 works just fine, regarding librosa, the newest version renders bugs in Real-Time-Voice-Cloning, but it takes changing only 2 basic functions to repair that
+
 #RTVC requirements:
+
 numpy==1.20.3
 Pillow==8.4.0
 PyQt5==5.15.6
