@@ -1,7 +1,10 @@
-pyaudio==0.2.13
-SpeechRecognition==3.10.0
-# --extra-index-url https://download.pytorch.org/whl/cu116 - change to your preferred cuda version
-torch==2.0.1
+pyaudio
+openai
+python-dotenv
+synthesizer
+SpeechRecognition
+--extra-index-url https://download.pytorch.org/whl/cu116
+torch
 git+https://github.com/openai/whisper.git
 soundfile==0.12.1
 sounddevice==0.4.6

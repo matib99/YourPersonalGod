@@ -1,8 +1,6 @@
 from VoiceInput.voice_input import VoiceInput
-from Conversation.conversation import Conversation
-from TTS.text_to_speech import Text_To_Speech
-from Conversation.conversation import read_initial_prompt
-from VoiceRecord.voice_record import VoiceRecord
+# from Conversation.conversation import Conversation
+# from TTS.text_to_speech import Text_To_Speech
 # right now, there are some issues/warnings with microphone integration
 
 def main():
@@ -17,17 +15,11 @@ def main():
         pause_threshold=2
     )
     print("Voice input ready")
-    
-    conversation = Conversation(initial_prompt = read_initial_prompt(), model_path = "../models/koala-7B.ggmlv3.q4_0.bin")
 
-    tts = Text_To_Speech()
-    print('\n')
-    decision = input("Record the voice sample [y] or use current one [n]: ")
-    print('\n')
-    if decision=='y':
-        VoiceRecord(filename="sample.wav")
-    else:
-        tts.set_sample('./sample.wav')
+    # conversation = Conversation(initial_prompt = "You are a helpful and intelligent assistant. Your interlocutor is not. Be ready for anything.", api_key_path = "Change this")
+
+    # tts = Text_To_Speech()
+    # tts.set_sample('sample_wav_path')
 
     input("start the conversation? press enter.")
     i = 0
@@ -35,19 +27,17 @@ def main():
         i += 1
         print("Your turn to speak")
         transcription = vinput.get_phrase()
-        print(f"transcribed voice: {transcription}")
-        #transcription = input("your response: ")
-        response = conversation.respond(transcription, max_tokens=40)
-        print(f"chatbot says: {response}")
-        tts.vocalize(response) #response is saved inside tts object, I figured it might be more convenient. I implemented playback and write-to-file methods specific for tts already, second one working, first one has troubles specific to my system
-        try: 
-            tts.play_audio()
-            tts.save_audio()
-        except:
-            tts.save_audio()
-        input("continue the conversation? ")
-        #print(f"{i}: {transcription}")
-        #print("Response: {:}".format(response))
+        # response = conversation.respond(transcription)
+        # tts.vocalize(response) #response is saved inside tts object, I figured it might be more convenient. I implemented playback and write-to-file methods specific for tts already, second one working, first one has troubles specific to my system
+        # try: 
+            # tts.play_audio()
+            # tts.save_audio()
+        # except:
+            # tts.save_audio()
+
+            
+        print(f"{i}: {transcription}")
+        # print("Response: {:}".format(response))
 
 
 if __name__ == "__main__":
