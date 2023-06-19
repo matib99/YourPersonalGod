@@ -1,8 +1,8 @@
 pyaudio
 openai
 python-dotenv
-synthesizer
 SpeechRecognition
+# synthesizer
 --extra-index-url https://download.pytorch.org/whl/cu116
 torch
 git+https://github.com/openai/whisper.git

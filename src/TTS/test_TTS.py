@@ -1,6 +1,6 @@
 from text_to_speech import Text_To_Speech
 import sys
-sys.path.append('./Real-Time-Voice-Cloning')
+sys.path.append('./RealTimeVoiceCloning')
 
 if __name__ == "__main__":
     TTS = Text_To_Speech()

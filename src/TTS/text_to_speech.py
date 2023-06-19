@@ -4,11 +4,36 @@ import soundfile as sf
 
 import numpy as np
 import torch
-import sys
-sys.path.append('./TTS/Real-Time-Voice-Cloning')
-from synthesizer.inference import Synthesizer
-from vocoder import inference as vocoder
-from encoder import inference as encoder
+import sys, os
+
+
+sys.path.insert(0, os.path.abspath("./TTS/RealTimeVoiceCloning"))
+sys.path.insert(0, os.path.abspath("./TTS/RealTimeVoiceCloning/vocoder2"))
+sys.path.insert(0, os.path.abspath("./TTS/RealTimeVoiceCloning/encoder2"))
+sys.path.insert(0, os.path.abspath("./TTS/RealTimeVoiceCloning/synthesizer2"))
+
+from TTS.RealTimeVoiceCloning.vocoder2 import inference as vocoder
+from TTS.RealTimeVoiceCloning.encoder2 import inference as encoder
+from TTS.RealTimeVoiceCloning.synthesizer2.inference import Synthesizer
+
+# spec_synth = importlib.util.spec_from_file_location('synthesizer', rtvc + 'synthesizer2/inference.py')
+# synthesizer = importlib.util.module_from_spec(spec_synth)
+# spec_enc = importlib.util.spec_from_file_location('inference', rtvc + 'encoder2/inference.py')
+# spec_voc = importlib.util.spec_from_file_location('vocoder', rtvc + 'vocoder2/inference.py')
+# encoder = importlib.util.module_from_spec(spec_enc)
+# vocoder = importlib.util.module_from_spec(spec_voc)
+
+
+
+# Synthesizer = synthesizer.Synthesizer
+# from TTS.RealTimeVoiceCloning.synthesizer.inference import Synthesizer
+# from TTS.RealTimeVoiceCloning.encoder2 import inference as encoder
+# from TTS.RealTimeVoiceCloning.vocoder2 import inference as vocoder
+
+print('-------------------------------------------')
+print(dir(encoder))
+print('-------------------------------------------')
+
 from pathlib import Path
 
 
@@ -18,7 +43,7 @@ def slerp_np(embed1, embed2, alpha):
 
 
 class Text_To_Speech():
-    def __init__(self, model_path = "./TTS/Real-Time-Voice-Cloning/saved_models/default/"):
+    def __init__(self, model_path = "./TTS/RealTimeVoiceCloning/saved_models/default/"):
 
         #parsing paths as arguments (it appears as though it is necessary)
         parser = argparse.ArgumentParser(

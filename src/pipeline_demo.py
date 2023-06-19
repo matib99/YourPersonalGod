@@ -10,8 +10,8 @@ def main():
         whisper_model='small',
         non_english=False,
         energy_treshold=1000,
-        # default_mic='Blue Snowball: USB Audio (hw:1,0)',
-        default_mic="default",
+        default_mic='Blue Snowball: USB Audio (hw:1,0)',
+        # default_mic="default",
         # record_timeout=2,
         # phrase_timeout=3,
         pause_threshold=2
@@ -27,9 +27,12 @@ def main():
     if decision=='y':
         VoiceRecord(filename="sample.wav")
     else:
-        tts.set_sample('./sample.wav')
+        tts.set_sample('./sample.mp3')
 
     input("start the conversation? press enter.")
+    # tts.vocalize("This is a test of the text-to-speech model. Here is a simple 2 sentences to test if it works and how well it works.")
+    # tts.play_audio()
+    # tts.save_audio()
     i = 0
     while True:
         i += 1
@@ -37,7 +40,8 @@ def main():
         transcription = vinput.get_phrase()
         print(f"transcribed voice: {transcription}")
         #transcription = input("your response: ")
-        response = conversation.respond(transcription, max_tokens=40)
+        # response = conversation.respond(transcription, max_tokens=40)
+        response = "This is an example response. Conversation model is not working right now."
         print(f"chatbot says: {response}")
         tts.vocalize(response) #response is saved inside tts object, I figured it might be more convenient. I implemented playback and write-to-file methods specific for tts already, second one working, first one has troubles specific to my system
         try: 
