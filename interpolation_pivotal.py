@@ -9,6 +9,7 @@ from moviepy.video.io import ImageSequenceClip
 CODE_DIR = "PTI"
 
 image_dir_name = "image"
+prepare_room_dir = "./prepare_room"
 
 use_image_online = False
 use_multi_id_training = True
@@ -65,7 +66,10 @@ if __name__ == "__main__":
     print("generators loaded")
 
     latent_codes = []
-    for image_name in os.listdir("./outputs/pti/embeddings/test/PTI"):
+    latent_files = os.listdir("./outputs/pti/embeddings/test/PTI")
+    targetvalue = os.listdir(prepare_room_dir)[0].split(".")[0]
+    latent_files.insert(0, latent_files.pop(latent_files.index(targetvalue)))
+    for image_name in latent_files:
         w_path_dir = f"{paths_config.embedding_base_dir}/{paths_config.input_data_id}"
         embedding_dir = f"{w_path_dir}/{paths_config.pti_results_keyword}/{image_name}"
         w_pivot = torch.load(f"{embedding_dir}/0.pt")
@@ -79,15 +83,23 @@ if __name__ == "__main__":
         (image, latent) = image_from_latents(person_latent, latent_codes[1], alpha)
         frames.append(image)
         if alpha == 0.0:
-            for i in range(15):
+            for i in range(40):
                 frames.append(image)
     for w in latent_codes[2:]:
         for alpha in np.arange(0, 1.0, step_size):
             latent = interpolated_latent(latent, person_latent, alpha / 5.0)
             (image, latent) = image_from_latents(latent, w, alpha)
             frames.append(image)
-        for i in range(15):
+        for i in range(40):
             frames.append(image)
-
+        #if i % 2 == 0:
     clip = ImageSequenceClip.ImageSequenceClip(frames, fps=fps)
-    clip.write_videofile("./outputs/pti/embeddings/test/PTI/interpolation.mp4")
+    clip.write_videofile("./outputs/videos/interpolation.mp4")
+            #frames = []
+    #if len(frames > 0):
+        #clip = ImageSequenceClip.ImageSequenceClip(frames, fps=fps)
+        #clip.write_videofile(f"./outputs/videos/interpolation_{i.zfill(2)}.mp4")
+
+    #for alpha in np.arange(0, 1.0, step_size):
+        #w = 
+        #(image, latent) = image_from_latents(latent, w, alpha)
