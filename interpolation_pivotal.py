@@ -2,9 +2,12 @@ import os
 import pickle
 import numpy as np
 import torch
-from pti.pti_configs  import paths_config, hyperparameters, global_config
+from pti.pti_configs import paths_config, hyperparameters, global_config
 from pti.scripts.run_pti import run_PTI
 from moviepy.video.io import ImageSequenceClip
+from glitch_this import ImageGlitcher
+from PIL import Image
+import random
 
 CODE_DIR = "PTI"
 
@@ -14,14 +17,14 @@ prepare_room_dir = "./prepare_room"
 use_image_online = False
 use_multi_id_training = True
 global_config.device = "cuda"
-#paths_config.e4e = "/content/PTI/pretrained_models/e4e_encode.pt"
-#paths_config.input_data_id = "test"
-#paths_config.input_data_path = "./ars_electronica"
-#paths_config.stylegan2_ada = "./training_results/sg2/god_human/00010-god_human_dataset-rectangle-mirror-shhq4-noaug-resumecustom/network-snapshot-000120.pkl"
-#paths_config.checkpoints_dir = "./outputs/pti/checkpoints/"
-#paths_config.style_clip_pretrained_mappers = "./PTI/pretrained_models"
+# paths_config.e4e = "/content/PTI/pretrained_models/e4e_encode.pt"
+# paths_config.input_data_id = "test"
+# paths_config.input_data_path = "./ars_electronica"
+# paths_config.stylegan2_ada = "./training_results/sg2/god_human/00010-god_human_dataset-rectangle-mirror-shhq4-noaug-resumecustom/network-snapshot-000120.pkl"
+# paths_config.checkpoints_dir = "./outputs/pti/checkpoints/"
+# paths_config.style_clip_pretrained_mappers = "./PTI/pretrained_models"
 hyperparameters.use_locality_regularization = False
-step_size = 1.0 / 150.0
+step_size = 0.8 / 200.0
 fps = 25
 
 
@@ -56,10 +59,27 @@ def image_from_latents(latent1, latent2, alpha):
     return image, latent
 
 
+def gradually_spaced_array(start=1.0, end=0.0, num_elements=200):
+    # Generate an array with gradually changing step sizes
+    x = np.linspace(
+        0, 1, num_elements
+    )  # Create an array of evenly spaced values from 0 to 1
+    progression = np.exp(x)  # Use exp function to define the progression of step sizes
+    steps = (
+        progression * (end - start) + start
+    )  # Scale and shift the progression to match the desired range
+
+    # Generate the final array using the calculated steps
+    arr = np.cumsum(steps)
+    arr = -arr / max(-arr)
+    return arr
+
+
 if __name__ == "__main__":
     print("start")
     model_id = run_PTI(use_wandb=False, use_multi_id_training=use_multi_id_training)
-    
+    # print(model_id)
+    # model_id = "WNLDZTYIWXQN"
     print("model loaded")
     generator_type = paths_config.multi_id_model_type
     old_G, new_G = load_generators(model_id, generator_type)
@@ -75,31 +95,61 @@ if __name__ == "__main__":
         w_pivot = torch.load(f"{embedding_dir}/0.pt")
         latent_codes.append(w_pivot)
     person_latent = latent_codes[0]
-    
+
     print("creating video...")
     # create video of interpolation
     frames = []
-    for alpha in np.arange(0, 0.9, step_size):
+    for alpha in np.arange(0, 0.8 + step_size, step_size):
         (image, latent) = image_from_latents(person_latent, latent_codes[1], alpha)
         frames.append(image)
+        if alpha == 0.8:
+            for i in range(75):
+                frames.append(image)
         if alpha == 0.0:
-            for i in range(40):
+            for i in range(75):
                 frames.append(image)
     for w in latent_codes[2:]:
-        for alpha in np.arange(0, 1.0, step_size):
-            latent = interpolated_latent(latent, person_latent, alpha / 5.0)
+        w = interpolated_latent(w, person_latent, 0.2)
+        arr = gradually_spaced_array()
+        for alpha in arr / 8:
+            # latent = interpolated_latent(latent, person_latent, alpha)
             (image, latent) = image_from_latents(latent, w, alpha)
             frames.append(image)
-        for i in range(40):
+        for i in range(75):
             frames.append(image)
-        #if i % 2 == 0:
+
+    glitcher = ImageGlitcher()
+    scan_lines = False
+    for i in reversed(range(1, 200)):
+        if i < 50 and i > 15:
+            scan_lines = bool(random.getrandbits(1))
+        elif i < 15:
+            scan_lines = True
+        if i % 10 in [0, 1, 2, 3, 8]:
+            color_offset = True
+        else:
+            color_offset = False
+
+        x = (float(i) - 1.0) * (98.0 / 199.0) + 1.0
+        glitch_amount = (100 - x) / 10.0
+        img = Image.fromarray(frames[-i])
+        img = glitcher.glitch_image(
+            img,
+            glitch_amount,
+            seed=random.randint(0, 100),
+            scan_lines=scan_lines,
+            color_offset=color_offset,
+        )
+        frames[-i] = np.asarray(img)
+    frames += [np.zeros_like(frames[-1])] * 75
+
     clip = ImageSequenceClip.ImageSequenceClip(frames, fps=fps)
     clip.write_videofile("./outputs/videos/interpolation.mp4")
-            #frames = []
-    #if len(frames > 0):
-        #clip = ImageSequenceClip.ImageSequenceClip(frames, fps=fps)
-        #clip.write_videofile(f"./outputs/videos/interpolation_{i.zfill(2)}.mp4")
+    # frames = []
+    # if len(frames > 0):
+    # clip = ImageSequenceClip.ImageSequenceClip(frames, fps=fps)
+    # clip.write_videofile(f"./outputs/videos/interpolation_{i.zfill(2)}.mp4")
 
-    #for alpha in np.arange(0, 1.0, step_size):
-        #w = 
-        #(image, latent) = image_from_latents(latent, w, alpha)
+    # for alpha in np.arange(0, 1.0, step_size):
+    # w =
+    # (image, latent) = image_from_latents(latent, w, alpha)
