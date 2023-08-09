@@ -14,6 +14,7 @@ A repository for the AI Algorythmic Art project. It's goal is to produce interac
 
 ## Installation (works at least on linux with anaconda installed)
 
+<!--
 * To install requirements it is preferred to create separate conda environment with python version 3.8, for example by using snippet (if not all requirements work out of the box you might need to install every library separately for some reason):
 
   ```bash
@@ -30,7 +31,7 @@ A repository for the AI Algorythmic Art project. It's goal is to produce interac
 
   ```bash
   cd ./src/TTS/
-  git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git
+  git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git RealTimeVoiceCloning
   cd ../..
   ```
 * Then due to librosa incompatibility you will need to change function "wav_to_mel_spectrogram(wav)" and variable "wav=librosa.resample(...)"in ./src/TTS/Real-Time-Voice-Cloning/encoder/audio.py according to [this thread](https://github.com/PaddlePaddle/PaddleSpeech/issues/1426). Correct versions look like following:
@@ -50,6 +51,16 @@ A repository for the AI Algorythmic Art project. It's goal is to produce interac
   and
   ```python
   wav = librosa.resample(wav, orig_sr=source_sr, target_sr=sampling_rate)
+  ```
+-->
+
+* preparing files, downloading tts model and repository and changing its files is handled automatically by **prepare.sh**, before next step you should use following snippet:
+  ```bash
+  conda create -n pipeline_env python==3.8
+  conda activate pipeline_env
+  pip install -r requirements.txt
+  conda install -c conda-forge libstdcxx-ng
+  bash prepare.sh
   ```
 * then you will need to download 8-bit quantized model (with .bit extension) to ./models/ directory. models are available in user [huggingface](huggingface.co/models?search=vicuna) repositories (I'm working with [this](https://huggingface.co/CRD716/ggml-vicuna-1.1-quantized/blob/main/ggml-vicuna-13B-1.1-q4_0.bin)), you have to find a model trained after approximately 19.05.2023, older ones tend to not be compatible with the latest llama.cpp library, so to use older versions you will need to downgrade llama_cpp_python library.
 * you have to first run RTVC demo file as described [here](https://github.com/CorentinJ/Real-Time-Voice-Cloning) in order to download a working model. It just requires you to run demo_cli.py file in RTVC directory.

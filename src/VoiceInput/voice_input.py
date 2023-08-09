@@ -1,7 +1,22 @@
+from ctypes import *
+from contextlib import contextmanager
 import speech_recognition as sr
 
 from sys import platform
 
+ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
+
+def py_error_handler(filename, line, function, err, fmt):
+    pass
+
+c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
+
+@contextmanager
+def noalsaerr():
+    asound = cdll.LoadLibrary('libasound.so')
+    asound.snd_lib_error_set_handler(c_error_handler)
+    yield
+    asound.snd_lib_error_set_handler(None)
 
 class VoiceInput():
     def __init__(self, whisper_model='small', non_english=False, energy_treshold=1000, default_mic='pulse', record_timeout=2, phrase_timeout=3, pause_threshold=1.5):
@@ -11,21 +26,22 @@ class VoiceInput():
 
         self.recorder.pause_threshold = 1.5
 
-        if 'linux' in platform:
-            mic_name = default_mic
-            if not mic_name or mic_name == 'list':
-                print("Available microphone devices are: ")
-                for index, name in enumerate(sr.Microphone.list_microphone_names()):
-                    print(f"Microphone with name \"{name}\" found")
-                return
+        with noalsaerr(): #prevents some unimportant errors from being printed
+            if 'linux' in platform:
+                mic_name = default_mic
+                if not mic_name or mic_name == 'list':
+                    print("Available microphone devices are: ")
+                    for index, name in enumerate(sr.Microphone.list_microphone_names()):
+                        print(f"Microphone with name \"{name}\" found")
+                    return
+                else:
+                    for index, name in enumerate(sr.Microphone.list_microphone_names()):
+                        if mic_name in name:
+                            source = sr.Microphone(
+                                sample_rate=16000, device_index=index)
+                            break
             else:
-                for index, name in enumerate(sr.Microphone.list_microphone_names()):
-                    if mic_name in name:
-                        source = sr.Microphone(
-                            sample_rate=16000, device_index=index)
-                        break
-        else:
-            source = sr.Microphone(sample_rate=16000)
+                    source = sr.Microphone(sample_rate=16000)
 
         self.source = source
         self.record_timeout = record_timeout
@@ -37,11 +53,11 @@ class VoiceInput():
         self.audio_model = model 
         
 
-        with source:
+        with noalsaerr(), source:
             self.recorder.adjust_for_ambient_noise(source)
     
     def get_phrase(self):
-        with self.source:
+        with noalsaerr(), self.source:
             data = self.recorder.listen(self.source)
         print("\nVoice recorded, now transcribing\n")
         transcription=self.recorder.recognize_whisper(data, self.audio_model)

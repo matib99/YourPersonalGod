@@ -8,7 +8,6 @@ import requests
 # The URL of the API endpoint
 url = "http://localhost:5000/api"
 
-
 def main():
     vinput = VoiceInput(
         whisper_model='small',

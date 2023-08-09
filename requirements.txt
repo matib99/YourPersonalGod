@@ -2,6 +2,7 @@ pyaudio
 openai
 python-dotenv
 SpeechRecognition
+fastapi
 # synthesizer
 --extra-index-url https://download.pytorch.org/whl/cu116
 torch

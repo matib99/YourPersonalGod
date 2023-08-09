@@ -2,7 +2,10 @@
 *.wav
 __pycache__
 src/Conversation/ggml-old-vic13b-q4_0.bin
-Real-Time-Voice-Cloning
+RealTimeVoiceCloning
 venv
-models/koala-7B.ggmlv3.q4_0.bin
-src/sample.mp3
+models/*.bin
+models/*.pt
+*.mp3
+*.pt
+*.bin
