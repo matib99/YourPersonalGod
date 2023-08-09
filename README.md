@@ -63,7 +63,6 @@ A repository for the AI Algorythmic Art project. It's goal is to produce interac
   bash prepare.sh
   ```
 * then you will need to download 8-bit quantized model (with .bit extension) to ./models/ directory. models are available in user [huggingface](huggingface.co/models?search=vicuna) repositories (I'm working with [this](https://huggingface.co/CRD716/ggml-vicuna-1.1-quantized/blob/main/ggml-vicuna-13B-1.1-q4_0.bin)), you have to find a model trained after approximately 19.05.2023, older ones tend to not be compatible with the latest llama.cpp library, so to use older versions you will need to downgrade llama_cpp_python library.
-* you have to first run RTVC demo file as described [here](https://github.com/CorentinJ/Real-Time-Voice-Cloning) in order to download a working model. It just requires you to run demo_cli.py file in RTVC directory.
 * you may have to change default_mic variable when calling class VoiceInput in pipeline_demo.py file (line 14) to your desired input audio server name (most likely to 'pulse'), You also have to change model path in pipeline_demo.py file to match your LLM.
 
 ## Repository structure
